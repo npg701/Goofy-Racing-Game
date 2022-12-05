@@ -14,15 +14,17 @@ class Vehicle:
         self.accel = accel
         self.ang_accel= ang_accel
     
-    def rotate(self,l=False, r=False):
-        
-        self.av += self.ang_accel
-        if self.av >= self.maxangvel:
-            self.av = self.maxangvel
-        if l:
-            self.angle += self.av
-        if r:
-            self.angle -= self.av
+    def rotate(self,l=False, r=False,spinning=False):
+        if not spinning:
+            self.av += self.ang_accel
+            if self.av >= self.maxangvel:
+                self.av = self.maxangvel
+            if l:
+                self.angle += self.av
+            if r:
+                self.angle -= self.av
+        else:
+            self.angle -= 3*self.av
 
     def angreset(self):
         self.av = 0
@@ -112,16 +114,31 @@ class Opponent(Vehicle):
         super().__init__(maxv, maxav, accel, img)
 
 class obstacle:
-    def __init__(self) -> None:
-        pass
+    def __init__(self,img,mask) -> None:
+        self.img = img 
+        self.mask = mask
+    def insert(self,disp, loc):
+        disp.blit(self.img, loc)
+
+
+        
     ## position and mask
+class banana(obstacle):
+    def __init__(self, img, mask) -> None:
+        super().__init__(img, mask)
     def spin(self, vehicle):
-        pass
+        vehicle.rotate(False,False,True)
+    def insert(self, disp,loc):
+        super().insert(disp,loc)
+        
+    
+class booster(obstacle):
+    def __init__(self, img, mask) -> None:
+        super().__init__(img, mask)
     def boost(self, vehicle):
-        pass
-    def slow(self, vehicle):
         pass
 
 class Track:
-    def __init__(self) -> None:
-        pass
+    def __init__(self, img , mask)-> None:
+        self.img = img
+        self.border = mask
