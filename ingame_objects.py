@@ -13,18 +13,20 @@ class Vehicle:
         self.x, self.y = self.start_position
         self.accel = accel
         self.ang_accel= ang_accel
+        self.spin = False
     
-    def rotate(self,l=False, r=False,spinning=False):
-        if not spinning:
-            self.av += self.ang_accel
-            if self.av >= self.maxangvel:
-                self.av = self.maxangvel
-            if l:
-                self.angle += self.av
-            if r:
-                self.angle -= self.av
-        else:
-            self.angle -= 3*self.av
+    def rotate(self,l=False, r=False):
+        self.av += self.ang_accel
+        if self.av >= self.maxangvel:
+            self.av = self.maxangvel
+        if self.spin:
+            self.angle -= 8*self.maxangvel
+            
+        elif l:
+            self.angle += self.av
+        elif r:
+            self.angle -= self.av
+        
 
     def angreset(self):
         self.av = 0
@@ -33,9 +35,11 @@ class Vehicle:
 
         rotate_img(disp,self.img,(self.x,self.y), self.angle)
     
-    def forward(self):
+    def forward(self, boost = False):
         self.v += self.accel
-        if self.v >= self.maxv:
+        if boost:
+            self.v = 3*self.maxv
+        elif ((3/2)*self.maxv > self.v) and  (self.v> self.maxv):
             self.v = self.maxv
         self.move()
     
@@ -71,20 +75,21 @@ class Vehicle:
 
 class PlayerVehicle(Vehicle):
     
-    def __init__(self, maxv, av, accel,ang_accel, img,player):
+    def __init__(self, maxv, av, accel,ang_accel, img,player,p1start, p2start):
         if player ==1:
-            self.start_position = (100,160)
+            self.start_position = p1start
         if player ==2:
-            self.start_position = (120,160)
+            self.start_position = p2start
         super().__init__(maxv, av,accel, img,ang_accel)
 
     def control(self,keys,player):
-        if player == 1:
+        
+        if player == 1:       
             if keys[pg.K_LEFT]:
                 super().rotate(True)
             elif keys[pg.K_RIGHT]:
                 super().rotate(False,True)
-            else:
+            elif not self.spin:
                 super().angreset()
 
             if keys[pg.K_UP]:
@@ -98,7 +103,7 @@ class PlayerVehicle(Vehicle):
                 super().rotate(True)
             elif keys[pg.K_d]:
                 super().rotate(False,True)
-            else:
+            elif not self.spin:
                 super().angreset()
 
             if keys[pg.K_w]:
@@ -114,31 +119,44 @@ class Opponent(Vehicle):
         super().__init__(maxv, maxav, accel, img)
 
 class obstacle:
-    def __init__(self,img,mask) -> None:
+    def __init__(self,img) -> None:
         self.img = img 
-        self.mask = mask
     def insert(self,disp, loc):
         disp.blit(self.img, loc)
+    def get_mask(self):
+        return pg.mask.from_surface(self.img)
+
 
 
         
     ## position and mask
 class banana(obstacle):
-    def __init__(self, img, mask) -> None:
-        super().__init__(img, mask)
+    def __init__(self, img) -> None:
+        super().__init__(img)
+        self.type = 'banana'
     def spin(self, vehicle):
-        vehicle.rotate(False,False,True)
+        vehicle.spin = True
+        vehicle.rotate()
     def insert(self, disp,loc):
         super().insert(disp,loc)
         
     
 class booster(obstacle):
-    def __init__(self, img, mask) -> None:
-        super().__init__(img, mask)
+    def __init__(self, img) -> None:
+        super().__init__(img)
+        self.type= 'booster'
     def boost(self, vehicle):
-        pass
+        vehicle.v = vehicle.maxv * 3
+        vehicle.forward(boost = True)
+    def insert(self, disp,loc):
+        super().insert(disp,loc)
 
 class Track:
-    def __init__(self, img , mask)-> None:
+    def __init__(self, img, borderimg,finish_loc,obstacle_locations, p1_start_pos, p2_start_pos )-> None:
         self.img = img
-        self.border = mask
+        self.borderimg = borderimg
+        self.border = pg.mask.from_surface(borderimg)
+        self.finish_loc = finish_loc 
+        self.obstacle_locations = obstacle_locations
+        self.p1_start = p1_start_pos
+        self.p2_start = p2_start_pos

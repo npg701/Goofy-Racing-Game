@@ -1,5 +1,5 @@
 import pygame as pg
-
+import random
 def rotate_img(win, img, top_left, angle):
     rotated_img = pg.transform.rotate(img,angle)
     new_rec = rotated_img.get_rect(
@@ -16,3 +16,20 @@ def screen(disp, imgs, player_car=False, obstacles=False):
         for o in obstacles:
             o[0].insert(disp,o[1])
     pg.display.update()
+
+def obstacle_setup(obsnum,obstacle_locations,banana,booster):
+    obstacles = []
+    obst_loc_nums = []
+    for i in range (obsnum):
+        i = random.randint(0,len(obstacle_locations)-1)
+        obst_loc_nums.append(i)
+            
+    for x in obst_loc_nums:
+        obs = random.randint(0,1)
+        if obs == 0:
+            obstacles.append((banana,obstacle_locations[x]))
+        if obs == 1:
+            obstacles.append((booster,obstacle_locations[x]))
+    return obstacles
+
+

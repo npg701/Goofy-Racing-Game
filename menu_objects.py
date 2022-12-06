@@ -41,3 +41,7 @@ class button:
                 return True
 
         return False
+
+class Text:
+    def __init__(self) -> None:
+        pass
