@@ -76,15 +76,20 @@ class Vehicle:
 class PlayerVehicle(Vehicle):
     
     def __init__(self, maxv, av, accel,ang_accel, img,player,p1start, p2start):
-        if player ==1:
+        self.laps = 0
+        self.win = False
+        self.prevfram  = None 
+        self.check = False
+        self.player = player
+        if self.player ==1:
             self.start_position = p1start
-        if player ==2:
+        if self.player ==2:
             self.start_position = p2start
         super().__init__(maxv, av,accel, img,ang_accel)
 
-    def control(self,keys,player):
+    def control(self,keys):
         
-        if player == 1:       
+        if self.player == 1:       
             if keys[pg.K_LEFT]:
                 super().rotate(True)
             elif keys[pg.K_RIGHT]:
@@ -98,7 +103,7 @@ class PlayerVehicle(Vehicle):
                 super().reverse()
             else:
                 super().slow()
-        if player == 2:
+        if self.player == 2:
             if keys[pg.K_a]:
                 super().rotate(True)
             elif keys[pg.K_d]:
@@ -125,11 +130,7 @@ class obstacle:
         disp.blit(self.img, loc)
     def get_mask(self):
         return pg.mask.from_surface(self.img)
-
-
-
         
-    ## position and mask
 class banana(obstacle):
     def __init__(self, img) -> None:
         super().__init__(img)
@@ -161,7 +162,7 @@ class Track:
         self.p1_start = p1_start_pos
         self.p2_start = p2_start_pos
 
-class Finish:
+class Checkpoint:
     def __init__(self, img) -> None:
         self.img = img
         self.border = pg.mask.from_surface(img)

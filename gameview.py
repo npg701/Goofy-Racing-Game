@@ -1,5 +1,6 @@
 import pygame as pg
 import random
+import time
 def rotate_img(win, img, top_left, angle):
     rotated_img = pg.transform.rotate(img,angle)
     new_rec = rotated_img.get_rect(
@@ -32,4 +33,16 @@ def obstacle_setup(obsnum,obstacle_locations,banana,booster):
             obstacles.append((booster,obstacle_locations[x]))
     return obstacles
 
-
+def start_game(disp,imgs,numbers,w,h,cars,obstacles):
+    imgs.append((numbers[3],(w/2,h/2)))
+    screen(disp,imgs,cars,obstacles)
+    imgs.remove((numbers[3],(w/2,h/2)))
+    time.sleep(1)
+    imgs.append((numbers[2],(w/2,h/2)))
+    screen(disp,imgs,cars,obstacles)
+    imgs.remove((numbers[2],(w/2,h/2)))
+    time.sleep(1)
+    imgs.append((numbers[1],(w/2,h/2)))
+    screen(disp,imgs,cars,obstacles)
+    imgs.remove((numbers[1],(w/2,h/2)))
+    time.sleep(1)
