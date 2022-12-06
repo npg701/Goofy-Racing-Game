@@ -42,6 +42,3 @@ class button:
 
         return False
 
-class Text:
-    def __init__(self) -> None:
-        pass

@@ -1,15 +1,12 @@
 import pygame as pg
 
 import time , random
-from ingame_objects import PlayerVehicle, Track, banana, booster
+from ingame_objects import PlayerVehicle, Track, banana, booster, Finish
 from menu_objects import button, selector
 
 from gameview import screen, obstacle_setup
 
 #Load all images
-
-
-
 purple_car = pg.image.load('imgs/Purple_car.png')
 green_car = pg.image.load('imgs/Green_car.png')
 blue_car = pg.image.load('imgs/Blue_car.png')
@@ -22,7 +19,10 @@ border1 = pg.image.load('imgs/trk1border.png')
 track2img = pg.image.load('imgs/trk2.png')
 border2 = pg.image.load('imgs/trk2border.png')
 
-finish = pg.image.load('imgs/finish.png')
+finish1img = pg.image.load('imgs/finish.png')
+finish2img =  pg.image.load('imgs/finish2.png')
+
+
 
 menuback = pg.image.load('imgs/Goofy Racing.png')
 
@@ -60,6 +60,10 @@ track2obstacle_locations = [(71, 321), (29, 371), (72, 445),(48, 536), (93, 645)
 track1 = Track(track1img, border1,(80,120),track1obstacle_locations,(100,160),(120,160) )
 track2 = Track(track2img, border2,(20,220),track2obstacle_locations,(30,260),(60,260) )
 
+finish1 = Finish(finish1img)
+finish2 = Finish(finish2img)
+finishes = [finish1,finish2]
+
 tracks = [track1, track2]
 
 w , h = track1.img.get_width(), track1.img.get_height()
@@ -86,7 +90,7 @@ j = 1
 
 
 
-finishMask = pg.mask.from_surface(finish)
+
 p1buttonMask = pg.mask.from_surface(p1buttonimg)
 p2buttonMask = pg.mask.from_surface(p2buttonimg)
 
@@ -130,20 +134,22 @@ while running:
         if p1button.check_clicked(event,mousepos):
             players =1
             track = tracks[track_num]
+            finish = finishes[track_num]
             player1_car = PlayerVehicle(4,5,0.15,0.3,car_select[i], 1,track.p1_start, track.p2_start)
             cars = [player1_car]
             obstacles = obstacle_setup(obsnum,track.obstacle_locations,banana,booster)
-            imgs= [(cyber,(0,0)),(track.img,(0,0)),(finish,track.finish_loc),(track.borderimg,(0,0))]
+            imgs= [(cyber,(0,0)),(track.img,(0,0)),(finish.img,track.finish_loc),(track.borderimg,(0,0))]
 
             game=True
         if p2button.check_clicked(event,mousepos):
             players =2 
             track = tracks[track_num]
+            finish = finishes[track_num]
             player1_car = PlayerVehicle(4,5,0.15,0.3,car_select[i], 1, track.p1_start, track.p2_start)
             player2_car = PlayerVehicle(4,5,0.15, 0.3,car_select[j],2, track.p1_start, track.p2_start)
             cars = [player1_car,player2_car]
             obstacles = obstacle_setup(obsnum,track.obstacle_locations,banana,booster)
-            imgs= [(cyber,(0,0)),(track.img,(0,0)),(finish,track.finish_loc),(track.borderimg,(0,0))]
+            imgs= [(cyber,(0,0)),(track.img,(0,0)),(finish.img,track.finish_loc),(track.borderimg,(0,0))]
         
             game=True
 
@@ -184,7 +190,7 @@ while running:
             if player_car.collision(track.border) != None:
                 player_car.recoil()
             
-            if player_car.collision(finishMask,(80,120))!= None:
+            if player_car.collision(finish.border,track.finish_loc)!= None:
                 print('finish')
 
             for o in obstacles:

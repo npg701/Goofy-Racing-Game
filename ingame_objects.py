@@ -160,3 +160,8 @@ class Track:
         self.obstacle_locations = obstacle_locations
         self.p1_start = p1_start_pos
         self.p2_start = p2_start_pos
+
+class Finish:
+    def __init__(self, img) -> None:
+        self.img = img
+        self.border = pg.mask.from_surface(img)
