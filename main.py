@@ -27,8 +27,11 @@ check1img =  pg.image.load('imgs/trk2check.png')
 
 
 menuback = pg.image.load('imgs/Goofy Racing.png')
-winback = pg.image.load('imgs/Goofy Win.png')
+p1winback = pg.image.load('imgs/Goofy p1 Win.png')
+p2winback = pg.image.load('imgs/Goofy p2 Win.png')
 solowinback = pg.image.load('imgs/Goofy solo Win.png')
+
+wins2p = [p1winback,p2winback]
 
 p1buttonimg = pg.image.load('imgs/1pbutton.png')
 p2buttonimg = pg.image.load('imgs/2pbutton.png')
@@ -47,9 +50,7 @@ seven= pg.image.load('imgs/7.png')
 eight= pg.image.load('imgs/8.png')
 numbers = [zero,one,two,three,four,five,six,seven,eight]
 track_num_lst = [one,two]
-large1 = pg.image.load('imgs/1L.png')
-large2= pg.image.load('imgs/2L.png')
-large_nums = [large1,large2]
+
 pg.init()
 
 pg.mixer.init()
@@ -111,7 +112,7 @@ car_selector = selector(0,5,pg.K_LEFT,pg.K_RIGHT)
 car_selector2 = selector(0,5,pg.K_a,pg.K_d)
 obs_selector = selector(0,8,pg.K_z,pg.K_x)
 track_selector = selector(0,1,pg.K_1,pg.K_2)
-lap_selector = selector(1,9,pg.K_c,pg.K_v)
+lap_selector = selector(1,8,pg.K_c,pg.K_v)
 track_num = 0
 lap_goal = 3
 banana = banana(bananaimg)
@@ -133,8 +134,9 @@ def check_win(player_car,lap_goal):
 
 
 
-running = True
+winner = int
 game = False
+running = True
 while running:
     menuimgs = [(menuback,(0,0)),(car_select[i], (w/2+175,h/2+130)),(car_select[j], (w/2+175,h/2+230)), (numbers[obsnum],(w/2+150,h/2+310)), (track_num_lst[track_num],(w/2+220,h/2+27)),(numbers[lap_goal],(w/2-60,h/2+27))]
     # ADD A LIST OF TEXT VALUEs FOR 0 - 10 FOR OBSTACLE SELECTOR USING INDEX OBSNUM
@@ -211,8 +213,9 @@ while running:
             if player_car.collision(track.border) != None:
                 player_car.recoil()
             check_lap(player_car, finish , track, check)
-            winner = check_win(player_car, lap_goal)
-            if winner:
+            
+            if check_win(player_car, lap_goal):
+                winner = int (check_win(player_car, lap_goal))
                 winScreen = True
                 running= False
                 game = False
@@ -229,7 +232,8 @@ while running:
 
 while winScreen:
     if players ==2:
-        winimgs = [(winback,(0,0)),(large_nums[winner-1],(w/2+150,h/2-167))]
+        winimg = wins2p[winner-1]
+        winimgs = [(winimg,(0,0))]
     if players ==1:
         winimgs = [(solowinback,(0,0))]
 
