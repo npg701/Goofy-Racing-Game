@@ -114,7 +114,7 @@ obs_selector = selector(0,8,pg.K_z,pg.K_x)
 track_selector = selector(0,1,pg.K_1,pg.K_2)
 lap_selector = selector(1,8,pg.K_c,pg.K_v)
 track_num = 0
-lap_goal = 3
+lap_goal = 2
 banana = banana(bananaimg)
 booster = booster(boostimg)
 obsnum = 0
@@ -132,11 +132,12 @@ def check_win(player_car,lap_goal):
         player_car.win = True
         return player_car.player
 
-
+lap_times = []
 
 winner = int
 game = False
 running = True
+winScreen= False
 while running:
     menuimgs = [(menuback,(0,0)),(car_select[i], (w/2+175,h/2+130)),(car_select[j], (w/2+175,h/2+230)), (numbers[obsnum],(w/2+150,h/2+310)), (track_num_lst[track_num],(w/2+220,h/2+27)),(numbers[lap_goal],(w/2-60,h/2+27))]
     # ADD A LIST OF TEXT VALUEs FOR 0 - 10 FOR OBSTACLE SELECTOR USING INDEX OBSNUM
@@ -163,7 +164,7 @@ while running:
             track = tracks[track_num]
             finish = finishes[track_num]
             check = checks[track_num]
-            player1_car = PlayerVehicle(4,5,0.15,0.4,car_select[i], 1,track.p1_start, track.p2_start)
+            player1_car = PlayerVehicle(5,6,0.25,0.4,car_select[i], 1,track.p1_start)
             cars = [player1_car]
             obstacles = obstacle_setup(obsnum,track.obstacle_locations,banana,booster)
             imgs= [(cyber,(0,0)),(check.img,(0,0)),(track.img,(0,0)),(finish.img,track.finish_loc),(track.borderimg,(0,0))]
@@ -174,8 +175,8 @@ while running:
             track = tracks[track_num]
             finish = finishes[track_num]
             check = checks[track_num]
-            player1_car = PlayerVehicle(4,5,0.15,0.4,car_select[i], 1, track.p1_start, track.p2_start)
-            player2_car = PlayerVehicle(4,5,0.15, 0.4,car_select[j],2, track.p1_start, track.p2_start)
+            player1_car = PlayerVehicle(5,6,0.25,0.4,car_select[i], 1, track.p1_start)
+            player2_car = PlayerVehicle(5,6,0.25, 0.4,car_select[j],2, track.p2_start)
             cars = [player1_car,player2_car]
             obstacles = obstacle_setup(obsnum,track.obstacle_locations,banana,booster)
             imgs= [(cyber,(0,0)),(check.img,(0,0)),(track.img,(0,0)),(finish.img,track.finish_loc),(track.borderimg,(0,0))]
@@ -237,7 +238,7 @@ while winScreen:
     if players ==1:
         winimgs = [(solowinback,(0,0))]
 
-        ###SINGLE PLAYER WIN CONDITIONS TO BE ADDED
+        ###lap time Leaderboard???
     screen (disp,winimgs)
     for event in pg.event.get():
         if event.type == pg.QUIT: #close game if the x is clicked

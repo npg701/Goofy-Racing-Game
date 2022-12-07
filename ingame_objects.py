@@ -75,16 +75,13 @@ class Vehicle:
 
 class PlayerVehicle(Vehicle):
     
-    def __init__(self, maxv, av, accel,ang_accel, img,player,p1start, p2start):
+    def __init__(self, maxv, av, accel,ang_accel, img,player,start):
         self.laps = 0
         self.win = False
         self.prevfram  = None 
         self.check = False
         self.player = player
-        if self.player ==1:
-            self.start_position = p1start
-        if self.player ==2:
-            self.start_position = p2start
+        self.start_position = start
         super().__init__(maxv, av,accel, img,ang_accel)
 
     def control(self,keys):
