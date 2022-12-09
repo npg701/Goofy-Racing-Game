@@ -5,4 +5,4 @@ as the main script, it should run fine.
 
 PYGAME is a required library to run this game. please download through your preferred method
 
-Upon dowloading all of the itmes in the repository along with pygame, running the script titled 'main.py' should start the game. 
+Upon downloading all of the items in the repository along with pygame, running the script titled 'main.py' should start the game. 
