@@ -252,6 +252,7 @@ while winScreen:
         screen (disp,winimgs)
         display_text(disp, text, w,h)
         pg.display.update()
+        time.sleep(1)
         ###lap time Leaderboard???
     
     for event in pg.event.get():
