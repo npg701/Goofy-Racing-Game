@@ -4,7 +4,7 @@ import time
 from ingame_objects import PlayerVehicle, Track, banana, booster, Checkpoint
 from menu_objects import button, selector
 
-from gameview import screen, obstacle_setup, start_game
+from gameview import screen, obstacle_setup, start_game, display_text
 
 #Load all images
 purple_car = pg.image.load('imgs/Purple_car.png')
@@ -123,9 +123,11 @@ def check_lap(player_car, finish, track , check):
     if (player_car.collision(finish.border,track.finish_loc)!= None) and (player_car.prevfram == None) and player_car.check:
         player_car.laps += 1
         player_car.check = False
+        return True
     player_car.prevfram = player_car.collision(finish.border,track.finish_loc)
     if player_car.collision(check.border):
         player_car.check = True
+    return False
 
 def check_win(player_car,lap_goal):
     if player_car.laps == lap_goal:
@@ -133,6 +135,7 @@ def check_win(player_car,lap_goal):
         return player_car.player
 
 lap_times = []
+
 
 winner = int
 game = False
@@ -169,6 +172,7 @@ while running:
             obstacles = obstacle_setup(obsnum,track.obstacle_locations,banana,booster)
             imgs= [(cyber,(0,0)),(check.img,(0,0)),(track.img,(0,0)),(finish.img,track.finish_loc),(track.borderimg,(0,0))]
             start_game(disp, imgs, numbers,w,h,cars,obstacles)
+            lasttime = time.time()
             game=True
         if p2button.check_clicked(event,mousepos):
             players =2 
@@ -181,6 +185,7 @@ while running:
             obstacles = obstacle_setup(obsnum,track.obstacle_locations,banana,booster)
             imgs= [(cyber,(0,0)),(check.img,(0,0)),(track.img,(0,0)),(finish.img,track.finish_loc),(track.borderimg,(0,0))]
             start_game(disp, imgs, numbers,w,h,cars,obstacles)
+            lasttime = time.time()
             game=True
 
     
@@ -195,6 +200,7 @@ while running:
 
 
     while game:
+
         ck.tick(fps)
         for event in pg.event.get():
             if event.type == pg.QUIT: #close game if the x is clicked
@@ -213,7 +219,10 @@ while running:
 
             if player_car.collision(track.border) != None:
                 player_car.recoil()
-            check_lap(player_car, finish , track, check)
+            if check_lap(player_car, finish , track, check) and (players==1):
+                laptime=round((time.time() - lasttime), 2)
+                lasttime = time.time()
+                lap_times.append(laptime)
             
             if check_win(player_car, lap_goal):
                 winner = int (check_win(player_car, lap_goal))
@@ -235,11 +244,16 @@ while winScreen:
     if players ==2:
         winimg = wins2p[winner-1]
         winimgs = [(winimg,(0,0))]
+        screen (disp,winimgs)
     if players ==1:
         winimgs = [(solowinback,(0,0))]
-
+        best_lap = min(lap_times)
+        text = 'Best lap: ' + str(best_lap)
+        screen (disp,winimgs)
+        display_text(disp, text, w,h)
+        pg.display.update()
         ###lap time Leaderboard???
-    screen (disp,winimgs)
+    
     for event in pg.event.get():
         if event.type == pg.QUIT: #close game if the x is clicked
             winScreen = False

@@ -3,8 +3,7 @@ import random
 import time
 def rotate_img(win, img, top_left, angle):
     rotated_img = pg.transform.rotate(img,angle)
-    new_rec = rotated_img.get_rect(
-        center = img.get_rect(topleft= top_left).center)
+    new_rec = rotated_img.get_rect(center = img.get_rect(topleft= top_left).center)
     win.blit(rotated_img, new_rec.topleft)
 
 def screen(disp, imgs, player_car=False, obstacles=False):
@@ -46,3 +45,10 @@ def start_game(disp,imgs,numbers,w,h,cars,obstacles):
     screen(disp,imgs,cars,obstacles)
     imgs.remove((numbers[1],(w/2,h/2)))
     time.sleep(1)
+
+def display_text(disp, text , w, h):
+    font = pg.font.Font('freesansbold.ttf', 32)
+    Text = font.render(text, True,(0, 0, 128))
+    textRect = Text.get_rect()
+    textRect.center = (w / 2, h / 2 + 125)
+    disp.blit(Text, textRect)
