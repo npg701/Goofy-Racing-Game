@@ -13,29 +13,29 @@ blue_car = pg.image.load('imgs/Blue_car.png')
 pink_car = pg.image.load('imgs/Pink_car.png')
 teal_car = pg.image.load('imgs/Teal_car.png')
 yellow_car = pg.image.load('imgs/Yellow_car.png')
-
+#tracks and borders
 track1img = pg.image.load('imgs/trk1.png')
 border1 = pg.image.load('imgs/trk1border.png')
 track2img = pg.image.load('imgs/trk2.png')
 border2 = pg.image.load('imgs/trk2border.png')
-
+#finish lines adn checkpoints
 finish2img = pg.image.load('imgs/finish.png')
 finish1img =  pg.image.load('imgs/finish2.png')
 check2img = pg.image.load('imgs/trk1check.png')
 check1img =  pg.image.load('imgs/trk2check.png')
 
 
-
+#menu backgrounds
 menuback = pg.image.load('imgs/Goofy Racing.png')
 p1winback = pg.image.load('imgs/Goofy p1 Win.png')
 p2winback = pg.image.load('imgs/Goofy p2 Win.png')
 solowinback = pg.image.load('imgs/Goofy solo Win.png')
+cyber = pg.image.load('imgs/cyber.png')
 
 wins2p = [p1winback,p2winback]
 
 p1buttonimg = pg.image.load('imgs/1pbutton.png')
 p2buttonimg = pg.image.load('imgs/2pbutton.png')
-cyber = pg.image.load('imgs/cyber.png')
 bananaimg = pg.image.load('imgs/banana.png')
 boostimg = pg.image.load('imgs/boost.png')
 
@@ -54,11 +54,11 @@ track_num_lst = [one,two]
 pg.init()
 
 pg.mixer.init()
-#Load audio file
+
 pg.mixer.music.load('synth.mp3')
-#Set preferred volume
+
 pg.mixer.music.set_volume(1)
-#Play the music
+
 pg.mixer.music.play()
 
 
@@ -77,7 +77,7 @@ checks = [check1,check2]
 
 tracks = [track1, track2]
 
-w , h = track1.img.get_width(), track1.img.get_height()
+w , h = track1.img.get_width(), track1.img.get_height() # both tracks were created to be the exact same dimensions in the window so this would work
 
 
 
@@ -85,7 +85,7 @@ disp = pg.display.set_mode((w,h))
 
 pg.display.set_caption('Goofy Racing')
 
-ck = pg.time.Clock()#setup a clock to make game run at a constant rate
+ck = pg.time.Clock()#setup a clock to make game run at a constant rate by ticking at a framerate
 
 fps = 120
 
@@ -99,57 +99,57 @@ j = 1
 
 
 
-
+#gets masks for button on menu
 p1buttonMask = pg.mask.from_surface(p1buttonimg)
 p2buttonMask = pg.mask.from_surface(p2buttonimg)
 
-
+#initialize buttons
 p1button = button([w/2-200,h/2-175,400,75],p1buttonimg)
 p2button = button([w/2-200,h/2-70,400,75],p2buttonimg)
 
-
+#initialize selectors
 car_selector = selector(0,5,pg.K_LEFT,pg.K_RIGHT)
 car_selector2 = selector(0,5,pg.K_a,pg.K_d)
 obs_selector = selector(0,8,pg.K_z,pg.K_x)
 track_selector = selector(0,1,pg.K_1,pg.K_2)
 lap_selector = selector(1,8,pg.K_c,pg.K_v)
+
 track_num = 0
 lap_goal = 2
 banana = banana(bananaimg)
 booster = booster(boostimg)
 obsnum = 0
 
-def check_lap(player_car, finish, track , check):
-    if (player_car.collision(finish.border,track.finish_loc)!= None) and (player_car.prevfram == None) and player_car.check:
-        player_car.laps += 1
-        player_car.check = False
+def check_lap(car, finish, track , check):
+    if (car.collision(finish.border,track.finish_loc)!= None) and car.check:
+        car.laps += 1 #if the car has passed the checkpoint and hits the finish line, count the lap
+        car.check = False #reset checpoint
         return True
-    player_car.prevfram = player_car.collision(finish.border,track.finish_loc)
-    if player_car.collision(check.border):
-        player_car.check = True
+
+    if car.collision(check.border):
+        car.check = True  #checkpoint
     return False
 
-def check_win(player_car,lap_goal):
-    if player_car.laps == lap_goal:
-        player_car.win = True
-        return player_car.player
+def check_win(car,lap_goal):
+    if car.laps == lap_goal:
+        car.win = True #marks which car won
+        return car.player
 
-lap_times = []
+lap_times = [] # empty list to hold laptimes
 
 
 winner = int
 game = False
-running = True
+running = True #run game but only the menu
 winScreen= False
 while running:
     menuimgs = [(menuback,(0,0)),(car_select[i], (w/2+175,h/2+130)),(car_select[j], (w/2+175,h/2+230)), (numbers[obsnum],(w/2+150,h/2+310)), (track_num_lst[track_num],(w/2+220,h/2+27)),(numbers[lap_goal],(w/2-60,h/2+27))]
-    # ADD A LIST OF TEXT VALUEs FOR 0 - 10 FOR OBSTACLE SELECTOR USING INDEX OBSNUM
+    #list of aall the menu images to print them to the screen
     
     mousepos = pg.mouse.get_pos()
     
 
-    
-    
+    #pause so the selectors have a short dead period
     time.sleep(.15)
     keys = pg.key.get_pressed()
     i = car_selector.change(keys,i)
@@ -157,13 +157,14 @@ while running:
     obsnum = obs_selector.change(keys,obsnum)
     track_num = track_selector.change(keys, track_num)
     lap_goal = lap_selector.change(keys, lap_goal)
+    #chang all of the selectors 
 
     for event in pg.event.get():
         if event.type == pg.QUIT: #close game if the x is clicked
             running = False
             break
         if p1button.check_clicked(event,mousepos):
-            players =1
+            players = 1 #set up game for 1 player if the button is pressed
             track = tracks[track_num]
             finish = finishes[track_num]
             check = checks[track_num]
@@ -171,11 +172,11 @@ while running:
             cars = [player1_car]
             obstacles = obstacle_setup(obsnum,track.obstacle_locations,banana,booster)
             imgs= [(cyber,(0,0)),(check.img,(0,0)),(track.img,(0,0)),(finish.img,track.finish_loc),(track.borderimg,(0,0))]
-            start_game(disp, imgs, numbers,w,h,cars,obstacles)
+            start_game(disp, imgs, numbers,w,h,cars,obstacles) #countdown
             lasttime = time.time()
             game=True
         if p2button.check_clicked(event,mousepos):
-            players =2 
+            players = 2 #set up game for 2 players if the button is pressed 
             track = tracks[track_num]
             finish = finishes[track_num]
             check = checks[track_num]
@@ -184,15 +185,15 @@ while running:
             cars = [player1_car,player2_car]
             obstacles = obstacle_setup(obsnum,track.obstacle_locations,banana,booster)
             imgs= [(cyber,(0,0)),(check.img,(0,0)),(track.img,(0,0)),(finish.img,track.finish_loc),(track.borderimg,(0,0))]
-            start_game(disp, imgs, numbers,w,h,cars,obstacles)
+            start_game(disp, imgs, numbers,w,h,cars,obstacles) #countdown
             lasttime = time.time()
             game=True
 
     
     if p1button.check_hover(mousepos,disp) and p2button.check_hover(mousepos,disp):
-        screen(disp,menuimgs)
+        screen(disp,menuimgs) #draw the screen wihtout the buttons if they are not being hovered over.
 
-    pg.display.update()
+    pg.display.update() #update the display
 
 
 
@@ -207,58 +208,54 @@ while running:
                 game = False
                 running = False
                 break
-            #if event.type == pg.MOUSEBUTTONDOWN:
-                #print(mousepos, end = " ,") 
         screen(disp,imgs,cars, obstacles)
         keys = pg.key.get_pressed()
         
-        
+        for car in cars: #iterate through the cars and check laps, wins, and collision with obstacles/ the wall after controlling them
+            car.control(keys)
 
-        for player_car in cars:
-            player_car.control(keys)
-
-            if player_car.collision(track.border) != None:
-                player_car.recoil()
-            if check_lap(player_car, finish , track, check) and (players==1):
-                laptime=round((time.time() - lasttime), 2)
+            if car.collision(track.border) != None:
+                car.recoil() #recoil the car if a border is touched
+            if check_lap(car, finish , track, check) and (players==1):
+                laptime=round((time.time() - lasttime), 2) #reset the laptime if a lap was completed and add the last to the list
                 lasttime = time.time()
                 lap_times.append(laptime)
             
-            if check_win(player_car, lap_goal):
-                winner = int (check_win(player_car, lap_goal))
-                winScreen = True
+            if check_win(car, lap_goal):
+                winner = int (check_win(car, lap_goal))
+                winScreen = True #if a player won, send game to end screen
                 running= False
                 game = False
                 
             for o in obstacles:
                 if o[0].type == 'banana':
-                    if player_car.collision(o[0].get_mask(),o[1])!= None:
-                        banana.spin(player_car)
+                    if car.collision(o[0].get_mask(),o[1])!= None:
+                        banana.spin(car) #spin the car if a banana is touched
                     else:
-                        player_car.spin = False
-                if (o[0].type == 'booster') and (player_car.collision(o[0].get_mask(),o[1])!= None):
-                    booster.boost(player_car)
+                        car.spin = False
+                if (o[0].type == 'booster') and (car.collision(o[0].get_mask(),o[1])!= None):
+                    booster.boost(car) #boost car if a booster is touched
 
 
 while winScreen:
     if players ==2:
-        winimg = wins2p[winner-1]
+        winimg = wins2p[winner-1] # display image corresponding to who won
         winimgs = [(winimg,(0,0))]
         screen (disp,winimgs)
     if players ==1:
         winimgs = [(solowinback,(0,0))]
-        best_lap = min(lap_times)
+        best_lap = min(lap_times) # get best lap time
         text = 'Best lap: ' + str(best_lap)
-        screen (disp,winimgs)
+        screen (disp,winimgs) #print win screen with lap time
         display_text(disp, text, w,h)
         pg.display.update()
-        time.sleep(1)
-        ###lap time Leaderboard???
+        time.sleep(1) # pause so the text flickers less
+        
     
     for event in pg.event.get():
         if event.type == pg.QUIT: #close game if the x is clicked
-            winScreen = False
+            winScreen = False # need this block so game can be closed
             break
     
 
-pg.quit()
+pg.quit() 

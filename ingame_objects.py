@@ -2,7 +2,36 @@ import pygame as pg
 from gameview import rotate_img
 import math
 class Vehicle:
-    
+    '''
+    Attributes
+    ----------
+    maxv: max velocity
+    max av:max angular velocity
+    accel: acceleration
+    img: image
+    ang_accel: angular acceleration
+
+    Methods
+    -------
+    rotate(l:bool, r:bool)
+        rotates left or right
+    angreset():
+        resets angular velocity
+    print(disp)
+        prints to a window
+    forward(boost:bool)
+        accelerates vehicle
+    slow()
+        slows vehicle down
+    reverse()
+        accelerates backwards/ brakes
+    move():
+        changes x and y based on velocity
+    collision(mask,pos):
+        checks if car collided with a mask
+    recoil()
+        immeadiatly reverses direction
+    '''
     def __init__(self, maxv, maxav, accel, img,ang_accel):
         self.img = img
         self.maxv = maxv #max velocity of vehicle
@@ -74,11 +103,25 @@ class Vehicle:
         self.v = -self.v*(9/10)
 
 class PlayerVehicle(Vehicle):
-    
+    '''
+    Attributes
+    ----------
+    maxv: max velocity
+    av:max angular velocity
+    accel: acceleration
+    ang_accel: angular acceleration
+    img: image
+    Player: 1 or 2
+    start: tuple of start posiiton
+
+    Methods
+    -------
+    control(keys):
+        controls vehicle based on keys that are pressed
+    '''
     def __init__(self, maxv, av, accel,ang_accel, img,player,start):
         self.laps = 0
-        self.win = False
-        self.prevfram  = None 
+        self.win = False 
         self.check = False
         self.player = player
         self.start_position = start
@@ -121,6 +164,18 @@ class Opponent(Vehicle):
         super().__init__(maxv, maxav, accel, img)
 
 class obstacle:
+    '''
+    Attributes
+    ----------
+    img: image of self
+
+    Methods
+    -------
+    insert(disp, loc)
+        Inserts into the game window at a location
+    get_mask():
+        gets the mask of the obstacle
+    '''
     def __init__(self,img) -> None:
         self.img = img 
     def insert(self,disp, loc):
@@ -129,6 +184,18 @@ class obstacle:
         return pg.mask.from_surface(self.img)
         
 class banana(obstacle):
+    '''
+    Attributes
+    ----------
+    img: image of self
+    
+    Methods
+    -------
+    insert(disp, loc)
+        Inserts into the game window at a location
+    spin(vehicle):
+        spins a vehicle
+    '''
     def __init__(self, img) -> None:
         super().__init__(img)
         self.type = 'banana'
@@ -140,6 +207,18 @@ class banana(obstacle):
         
     
 class booster(obstacle):
+    '''
+    Attributes
+    ----------
+    img: image of self
+
+    Methods
+    -------
+    insert(disp, loc)
+        Inserts into the game window at a location
+    boost(vehicle):
+        boosts a vehicle
+    '''
     def __init__(self, img) -> None:
         super().__init__(img)
         self.type= 'booster'
@@ -150,6 +229,17 @@ class booster(obstacle):
         super().insert(disp,loc)
 
 class Track:
+    '''
+    Attributes
+    ----------
+    img: image of self
+    borderimg: img of border
+    finish_loc: tuple of finish line location
+    obstacle_locations: list of tuples for obstacle locations
+    p1_start_pos: player 1 start position
+    p2_start_pos:player 2 start position
+    -------
+    '''
     def __init__(self, img, borderimg,finish_loc,obstacle_locations, p1_start_pos, p2_start_pos )-> None:
         self.img = img
         self.borderimg = borderimg
@@ -160,6 +250,12 @@ class Track:
         self.p2_start = p2_start_pos
 
 class Checkpoint:
+    '''
+    Attributes
+    ----------
+    img: image of self
+    border: mask of self for collisions
+    '''
     def __init__(self, img) -> None:
         self.img = img
         self.border = pg.mask.from_surface(img)

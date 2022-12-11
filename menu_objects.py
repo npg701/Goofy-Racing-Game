@@ -1,7 +1,19 @@
 import pygame as pg
-from gameview import screen
 
 class selector:
+    '''
+    Attributes
+    ----------
+    left: left boundary
+    right: right boundary
+    key_l:left selection key
+    key_right: right selection key
+
+    Methods
+    -------
+    change(keys,idx):
+        change the index sent in based on teh keys pressed and return it
+    '''
     def __init__(self, left,right, key_l, key_r):
         self.left = left 
         self.right = right
@@ -20,6 +32,19 @@ class selector:
        
     
 class button:
+    '''
+    Attributes
+    ----------
+    location list four values: top left x, top left y, bottom right x, bottom right y
+    img: image of self
+
+    Methods
+    -------
+    check_hover(mousepos, disp):
+        checks if mouse is hovering over the button
+    check clicked(event, mousepos):
+        checks if the mouse was clicked on the button
+    '''
     def __init__(self, location, img):
         self.img = img
         self.locrec= location
@@ -41,4 +66,3 @@ class button:
                 return True
 
         return False
-
